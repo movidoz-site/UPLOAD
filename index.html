@@ -2,58 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload to Up4Stream</title>
+  <title>My Up4Stream Account Info</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 30px; text-align: center; }
-    input, button { margin: 10px; padding: 10px; }
-    #status { margin-top: 20px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    #account-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      max-width: 500px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    .info {
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
-  <h1>Upload Video to Up4Stream</h1>
-
-  <input type="file" id="fileInput" accept="video/*">
-  <button onclick="uploadFile()">Upload</button>
-
-  <div id="status"></div>
+  <div id="account-box">
+    <h2>Up4Stream Account Info</h2>
+    <div id="result">Loading...</div>
+  </div>
 
   <script>
-    async function uploadFile() {
-      const fileInput = document.getElementById("fileInput");
-      const status = document.getElementById("status");
-
-      if (fileInput.files.length === 0) {
-        status.textContent = "Please choose a video file first.";
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const formData = new FormData();
-      formData.append("key", "605s9lfso9rfxnbyccv"); // your API key
-      formData.append("file", file);
-
-      status.textContent = "Uploading... Please wait.";
-
+    async function fetchAccountInfo() {
       try {
-        const response = await fetch("https://uproxy.up4stream.com/upload/01", {
-          method: "POST",
-          body: formData
-        });
+        const response = await fetch("https://up4stream.com/api/account/info?key=605s9lfso9rfxnbyccv");
+        const data = await response.json();
 
-        if (!response.ok) throw new Error("Upload failed, HTTP " + response.status);
-
-        const result = await response.json();
-        console.log(result);
-        if (result.status === 200) {
-          status.innerHTML = "✅ Upload successful!<br>Filecode: <b>" + result.files[0].filecode + "</b>";
+        if (data.status === 200) {
+          const r = data.result;
+          document.getElementById("result").innerHTML = `
+            <div class="info"><b>Username:</b> ${r.login}</div>
+            <div class="info"><b>Email:</b> ${r.email}</div>
+            <div class="info"><b>Files Total:</b> ${r.files_total}</div>
+            <div class="info"><b>Storage Used:</b> ${r.storage_used} MB</div>
+            <div class="info"><b>Storage Left:</b> ${r.storage_left} MB</div>
+            <div class="info"><b>Premium:</b> ${r.premium ? "Yes (expires: " + r.premium_expire + ")" : "No"}</div>
+            <div class="info"><b>Balance:</b> $${r.balance}</div>
+          `;
         } else {
-          status.textContent = "❌ Upload failed: " + result.msg;
+          document.getElementById("result").textContent = "Error: " + data.msg;
         }
       } catch (err) {
-        console.error(err);
-        status.textContent = "Error: " + err.message;
+        document.getElementById("result").textContent = "Failed to fetch account info.";
       }
     }
+
+    fetchAccountInfo();
   </script>
 </body>
 </html>
