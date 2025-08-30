@@ -2,75 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Video Upload</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
-    #progress {
-      margin-top: 15px;
-      font-weight: bold;
-      color: green;
-    }
-  </style>
+  <title>Upload Video</title>
 </head>
 <body>
-  <h2>Upload Video to Up4Stream</h2>
-  
-  <input type="file" id="fileInput" accept="video/*"><br><br>
-  <button onclick="uploadVideo()">Upload</button>
-
-  <div id="progress"></div>
-
-  <script>
-    const API_KEY = "605s9lfso9rfxnbyccv"; // your API key
-
-    async function uploadVideo() {
-      const file = document.getElementById("fileInput").files[0];
-      if (!file) {
-        alert("Please choose a video file first.");
-        return;
-      }
-
-      document.getElementById("progress").innerText = "Requesting upload server...";
-
-      try {
-        // Step 1: Get upload server
-        const res = await fetch(`https://up4stream.com/api/upload/server?key=${API_KEY}`);
-        const data = await res.json();
-        if (!data.result) throw new Error("Failed to get upload server");
-        const uploadUrl = data.result;
-
-        // Step 2: Upload file
-        const formData = new FormData();
-        formData.append("key", API_KEY);
-        formData.append("file", file);
-
-        document.getElementById("progress").innerText = "Uploading... Please wait.";
-
-        const uploadRes = await fetch(uploadUrl, {
-          method: "POST",
-          body: formData
-        });
-
-        const result = await uploadRes.json();
-        console.log(result);
-
-        if (result.status === 200) {
-          const filecode = result.files[0].filecode;
-          document.getElementById("progress").innerHTML =
-            `✅ Upload complete! Filecode: <b>${filecode}</b>`;
-        } else {
-          document.getElementById("progress").innerText = "Upload failed.";
-        }
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("progress").innerText = "Error: " + err.message;
-      }
-    }
-  </script>
+  <h2>Upload Video</h2>
+  <form method="POST" enctype="multipart/form-data" id="uploadForm">
+    <input type="hidden" name="key" value="605s9lfso9rfxnbyccv">
+    <input type="file" name="file" accept="video/*"><br><br>
+    <input type="submit" value="Upload">
+  </form>
 </body>
 </html>
