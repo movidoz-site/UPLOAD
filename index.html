@@ -50,6 +50,8 @@
       border: none;
       margin: 5px;
       cursor: pointer;
+      flex-direction: column;
+      align-items: center;
     }
 
     .postimg-container {
@@ -72,6 +74,16 @@
 
     .postimg-container:hover .postimg {
       transform: scale(1.05);
+    }
+
+    .video-title {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000;
+      word-wrap: break-word;
+      max-width: 250px;
     }
 
     /* Popup overlay */
@@ -142,6 +154,9 @@
         font-size: 18px;
         padding: 4px 8px;
       }
+      .video-title {
+        max-width: 90%;
+      }
     }
   </style>
 </head>
@@ -186,6 +201,7 @@
           <div class="postimg-container">
             <img src="${video.thumbnail}" class="postimg" alt="${video.title}">
           </div>
+          <div class="video-title">${video.title}</div>
         `;
         div.addEventListener("click", () => {
           document.getElementById("player").innerHTML = video.iframe;
