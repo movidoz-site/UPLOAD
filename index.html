@@ -2,14 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload Video</title>
+  <title>Upload to Up4Stream</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; text-align: center; }
+    input, button { margin: 10px; padding: 10px; }
+    #status { margin-top: 20px; font-weight: bold; }
+  </style>
 </head>
 <body>
-  <h2>Upload Video</h2>
-  <form method="POST" enctype="multipart/form-data" id="uploadForm">
-    <input type="hidden" name="key" value="605s9lfso9rfxnbyccv">
-    <input type="file" name="file" accept="video/*"><br><br>
-    <input type="submit" value="Upload">
-  </form>
+  <h1>Upload Video to Up4Stream</h1>
+
+  <input type="file" id="fileInput" accept="video/*">
+  <button onclick="uploadFile()">Upload</button>
+
+  <div id="status"></div>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById("fileInput");
+      const status = document.getElementById("status");
+
+      if (fileInput.files.length === 0) {
+        status.textContent = "Please choose a video file first.";
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("key", "605s9lfso9rfxnbyccv"); // your API key
+      formData.append("file", file);
+
+      status.textContent = "Uploading... Please wait.";
+
+      try {
+        const response = await fetch("https://uproxy.up4stream.com/upload/01", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) throw new Error("Upload failed, HTTP " + response.status);
+
+        const result = await response.json();
+        console.log(result);
+        if (result.status === 200) {
+          status.innerHTML = "✅ Upload successful!<br>Filecode: <b>" + result.files[0].filecode + "</b>";
+        } else {
+          status.textContent = "❌ Upload failed: " + result.msg;
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Error: " + err.message;
+      }
+    }
+  </script>
 </body>
 </html>
+
+
