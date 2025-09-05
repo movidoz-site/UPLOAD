@@ -52,13 +52,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const apiKey = '73f34c02cb8068ab850d9e9a219ec522'; 
+            const apiKey = '57da40e4e652807b8d8515c4d099a88b3dd05504ed17b497f7f5af612908f21c'; 
             const gallery = document.getElementById('video-gallery');
 
             // Function to fetch videos from the API
             const fetchVideos = async () => {
                 try {
-                    const response = await fetch(`https://api.streamup.cc/v1/data?api_key=${apiKey}`);
+                    const response = await fetch(`https://streamflash.sx/api/list_videos.php?api_key=${apiKey}`);
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
@@ -99,3 +99,4 @@
 
 </body>
 </html>
+
